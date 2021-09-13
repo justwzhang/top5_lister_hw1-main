@@ -129,6 +129,13 @@ export default class Top5Controller {
                     this.model.updateId();
                     this.model.view.refreshLists(this.model.top5Lists);
                     this.model.saveLists();
+                    for(let i = 1; i<=5; i++){
+                        let item = document.getElementById("item-" + i);
+                        item.textContent = "";
+                    }
+                    let statusBar = document.getElementById("top5-statusbar");
+                    statusBar.classList.remove("status-bar-highlighted");
+                    statusBar.innerHTML = "";
                 }
             }
 
@@ -145,7 +152,8 @@ export default class Top5Controller {
             statusBar.innerHTML = "";
             let tempElemnt = document.createElement("h1");
             tempElemnt.setAttribute("style", "text-align:center");
-            tempElemnt.innerHTML = "Top 5 " + document.getElementById("list-card-text-" + id).innerHTML;
+            let currentListName = this.model.top5Lists[id].name;
+            tempElemnt.innerHTML = "Top 5 " + currentListName;
             statusBar.appendChild(tempElemnt);
             this.model.view.enableButton("close-button");
             this.model.view.disableButton("add-list-button");
