@@ -16,7 +16,7 @@ import MoveItem_Transaction from "./transactions/MoveItem_Transaction.js";
  * inside the view of the page.
  * 
  * @author McKilla Gorilla
- * @author ?
+ * @author Justin Zhang
  */
 export default class Top5Model {
     constructor() {
@@ -34,14 +34,8 @@ export default class Top5Model {
     }
     //the drag and move implementation
     moveItem(oldIndex, newIndex){
-        // console.log("test move item");
         this.currentList.moveItem(oldIndex, newIndex);
         this.view.update(this.currentList);
-        // if(oldIndex < newIndex){
-
-        // }else{
-            
-        // }
     }
 
     getList(index) {
@@ -57,7 +51,7 @@ export default class Top5Model {
         }
         return -1;
     }
-    //removes a node from a list while maintaining the id count and order
+    //removes a node from a list while maintaining the id count and order based on name
     removeFromList(id) {
         let newTop5List = [];
         for(let i = 0; i<this.top5Lists.length; i++){
