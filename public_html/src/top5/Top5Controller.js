@@ -52,25 +52,18 @@ export default class Top5Controller {
                 item.textContent = "";
             }
         }
-        //event listener that makes all item spaces drop spaces
-        function dragOver(event){
-            event.preventDefault();
-        }
         // SETUP THE ITEM HANDLERS
         for (let i = 1; i <= 5; i++) {
             let item = document.getElementById("item-" + i);
-            //ensures that all the item elements are drop spaces
-            item.addEventListener('dragover', dragOver);
             //saves the id for future use
             item.ondragstart = (event) => {
-                event.dataTransfer.setData('text/plain', event.target.id);
+                this.originalId = event.target.id;
             }
             //splices the items in the array
             item.ondrop = (event) => {
                 let newId = event.target.id;
                 let newIndex = parseInt(event.target.id.substring(5))-1;
-                let originalId = event.dataTransfer.getData('text/plain');
-                let originalIndex = parseInt(originalId.substring(5))-1;
+                let originalIndex = parseInt(this.originalId.substring(5))-1;
                 this.model.addMoveItemTransaction(originalIndex, newIndex);
                 this.model.view.updateToolbarButtons(this.model);
                 this.model.saveLists();
@@ -130,8 +123,12 @@ export default class Top5Controller {
 
             textInput.onkeydown = (event) => {
                 if (event.key === 'Enter') {
-                    doc.innerHTML = event.target.value;
-                    this.model.top5Lists[id].setName(event.target.value);
+                    let name = event.target.value;
+                    if(name === ""){
+                        name = "Untitled"
+                    }
+                    doc.innerHTML = name;
+                    this.model.top5Lists[id].setName(name);
                     this.model.sortLists();
                     this.model.updateId();
                     this.model.view.refreshLists(this.model.top5Lists);
@@ -147,7 +144,23 @@ export default class Top5Controller {
             }
 
             textInput.onblur = (event) => {
+                let name = event.target.value;
+                if(name === ""){
+                    name = "Untitled"
+                }
+                doc.innerHTML = name;
+                this.model.top5Lists[id].setName(name);
+                this.model.sortLists();
+                this.model.updateId();
                 this.model.view.refreshLists(this.model.top5Lists);
+                this.model.saveLists();
+                for(let i = 1; i<=5; i++){
+                    let item = document.getElementById("item-" + i);
+                    item.textContent = "";
+                }
+                let statusBar = document.getElementById("top5-statusbar");
+                statusBar.classList.remove("status-bar-highlighted");
+                statusBar.innerHTML = "";
             }
         }
         // FOR SELECTING THE LIST

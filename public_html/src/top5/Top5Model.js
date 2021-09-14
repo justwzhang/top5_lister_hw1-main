@@ -35,6 +35,7 @@ export default class Top5Model {
     //the drag and move implementation
     moveItem(oldIndex, newIndex){
         this.currentList.moveItem(oldIndex, newIndex);
+        this.saveLists();
         this.view.update(this.currentList);
     }
 
@@ -158,7 +159,8 @@ export default class Top5Model {
                 }
                 this.addNewList(listData.name, items);
             }
-            this.sortLists();   
+            this.sortLists();
+            this.updateId();   
             this.view.refreshLists(this.top5Lists);
             return true;
         }        
