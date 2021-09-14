@@ -24,11 +24,9 @@ export default class Top5Controller {
         document.getElementById("add-list-button").onmousedown = (event) => {
             let addButton = document.getElementById("add-list-button");
             if(!addButton.classList.contains("disabled")){
-                let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);     
-                // this.model.updateId();       
+                let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
                 this.model.loadList(newList.id);
                 this.model.saveLists();
-                this.model.view.disableButton("add-list-button");
             }
         }
         document.getElementById("undo-button").onmousedown = (event) => {
@@ -71,6 +69,8 @@ export default class Top5Controller {
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
                 if (this.model.hasCurrentList()) {
+                    this.model.view.disableButton("add-list-button");
+
                     // CLEAR THE TEXT
                     item.innerHTML = "";
 
@@ -85,16 +85,19 @@ export default class Top5Controller {
                     textInput.ondblclick = (event) => {
                         this.ignoreParentClick(event);
                         this.model.view.updateToolbarButtons(this.model);
+                        this.model.view.enableButton("add-list-button");
                     }
                     textInput.onkeydown = (event) => {
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
                             this.model.view.updateToolbarButtons(this.model);
+                            this.model.view.enableButton("add-list-button");
                         }
                     }
                     textInput.onblur = (event) => {
                         this.model.restoreList();
                         this.model.view.updateToolbarButtons(this.model);
+                        this.model.view.enableButton("add-list-button");
                     }
                     this.model.view.updateToolbarButtons(this.model);
                 }
@@ -105,6 +108,7 @@ export default class Top5Controller {
     registerListSelectHandlers(id) {
         // FOR CHANGING LIST NAME
         document.getElementById("top5-list-" + id).ondblclick = (event) => {
+            this.model.view.disableButton("add-list-button");
             let doc = document.getElementById("list-card-text-" + id);
 
             doc.innerHTML = "";
@@ -123,6 +127,7 @@ export default class Top5Controller {
 
             textInput.onkeydown = (event) => {
                 if (event.key === 'Enter') {
+                    this.model.view.enableButton("add-list-button");
                     let name = event.target.value;
                     if(name === ""){
                         name = "Untitled"
@@ -144,6 +149,7 @@ export default class Top5Controller {
             }
 
             textInput.onblur = (event) => {
+                this.model.view.enableButton("add-list-button");
                 let name = event.target.value;
                 if(name === ""){
                     name = "Untitled"
@@ -176,7 +182,7 @@ export default class Top5Controller {
             tempElemnt.innerHTML = "Top 5 " + currentListName;
             statusBar.appendChild(tempElemnt);
             this.model.view.enableButton("close-button");
-            this.model.view.disableButton("add-list-button");
+
             // GET THE SELECTED LIST
             this.model.loadList(id);
         }
