@@ -1,6 +1,7 @@
 import jsTPS from "../common/jsTPS.js"
 import Top5List from "./Top5List.js";
 import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
+import MoveItem_Transaction from "./transactions/MoveItem_Transaction.js";
 
 /**
  * Top5Model.js
@@ -33,11 +34,14 @@ export default class Top5Model {
     }
     //the drag and move implementation
     moveItem(oldIndex, newIndex){
-        if(oldIndex < newIndex){
+        // console.log("test move item");
+        this.currentList.moveItem(oldIndex, newIndex);
+        this.view.update(this.currentList);
+        // if(oldIndex < newIndex){
 
-        }else{
+        // }else{
             
-        }
+        // }
     }
 
     getList(index) {
@@ -173,6 +177,10 @@ export default class Top5Model {
 
     restoreList() {
         this.view.update(this.currentList);
+    }
+
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        this.tps.addTransaction(new MoveItem_Transaction(this, oldIndex, newIndex));
     }
 
     addChangeItemTransaction = (id, newText) => {

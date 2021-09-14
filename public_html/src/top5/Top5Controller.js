@@ -16,7 +16,9 @@ export default class Top5Controller {
         this.initHandlers();
     }
 
-    
+    moveItem(oldIndex, newIndex){
+        
+    }
     initHandlers() {
         // SETUP THE TOOLBAR BUTTON HANDLERS
         document.getElementById("add-list-button").onmousedown = (event) => {
@@ -50,24 +52,29 @@ export default class Top5Controller {
                 item.textContent = "";
             }
         }
-
+        //event listener that makes all item spaces drop spaces
+        function dragOver(event){
+            event.preventDefault();
+        }
         // SETUP THE ITEM HANDLERS
         for (let i = 1; i <= 5; i++) {
             let item = document.getElementById("item-" + i);
-
-            item.ondrag = (event) =>{
-                console.log("dragging");
+            //ensures that all the item elements are drop spaces
+            item.addEventListener('dragover', dragOver);
+            //saves the id for future use
+            item.ondragstart = (event) => {
+                event.dataTransfer.setData('text/plain', event.target.id);
             }
-            item.ondragend = (event) =>{
-                console.log("drag end");
-            }
+            //splices the items in the array
             item.ondrop = (event) => {
-                console.log("name");
+                let newId = event.target.id;
+                let newIndex = parseInt(event.target.id.substring(5))-1;
+                let originalId = event.dataTransfer.getData('text/plain');
+                let originalIndex = parseInt(originalId.substring(5))-1;
+                this.model.addMoveItemTransaction(originalIndex, newIndex);
+                this.model.view.updateToolbarButtons(this.model);
+                this.model.saveLists();
             }
-            item.ondragenter = (event) => {
-
-            }
-
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
                 if (this.model.hasCurrentList()) {
