@@ -23,6 +23,7 @@ export default class Top5Controller {
         // SETUP THE TOOLBAR BUTTON HANDLERS
         document.getElementById("add-list-button").onmousedown = (event) => {
             let addButton = document.getElementById("add-list-button");
+            this.model.view.enableButton("close-button");
             if(!addButton.classList.contains("disabled")){
                 let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
                 this.model.loadList(newList.id);
@@ -42,7 +43,7 @@ export default class Top5Controller {
             this.model.view.disableButton("close-button")
             this.model.view.updateToolbarButtons(this.model);
             let statusBar = document.getElementById("top5-statusbar");
-            statusBar.classList.remove("status-bar-highlighted");
+        
             statusBar.innerHTML = "";
             this.model.view.enableButton("add-list-button");
             for(let i = 1; i<=5; i++){
@@ -95,7 +96,7 @@ export default class Top5Controller {
                         }
                     }
                     textInput.onblur = (event) => {
-                        this.model.restoreList();
+                        this.model.addChangeItemTransaction(i-1, event.target.value);
                         this.model.view.updateToolbarButtons(this.model);
                         this.model.view.enableButton("add-list-button");
                     }
@@ -143,7 +144,6 @@ export default class Top5Controller {
                         item.textContent = "";
                     }
                     let statusBar = document.getElementById("top5-statusbar");
-                    statusBar.classList.remove("status-bar-highlighted");
                     statusBar.innerHTML = "";
                 }
             }
@@ -165,7 +165,6 @@ export default class Top5Controller {
                     item.textContent = "";
                 }
                 let statusBar = document.getElementById("top5-statusbar");
-                statusBar.classList.remove("status-bar-highlighted");
                 statusBar.innerHTML = "";
             }
         }
@@ -173,8 +172,6 @@ export default class Top5Controller {
         document.getElementById("top5-list-" + id).onmousedown = (event) => {
             this.model.unselectAll();
             let statusBar = document.getElementById("top5-statusbar");
-            statusBar.classList.remove("status-bar-highlighted");
-            statusBar.classList.add("status-bar-highlighted");
             statusBar.innerHTML = "";
             let tempElemnt = document.createElement("h1");
             tempElemnt.setAttribute("style", "text-align:center");
@@ -212,9 +209,11 @@ export default class Top5Controller {
             let deleteSpan = document.getElementById("delete-list-span");
             deleteSpan.innerHTML = "";
             deleteSpan.appendChild(document.createTextNode(listName));
+            this.model.view.disableButton("add-list-button");
             modal.classList.add("is-visible");
             //clicking confirm
             document.getElementById("dialog-confirm-button").onmousedown = (event)=>{
+                this.model.view.disableButton("close-button");
                 this.model.removeFromList(id);
                 modal.classList.remove("is-visible");
                 this.model.saveLists();
@@ -228,6 +227,7 @@ export default class Top5Controller {
             document.getElementById("dialog-cancel-button").onmousedown = (event)=>{
                 modal.classList.remove("is-visible");
             }
+            this.model.view.enableButton("add-list-button");
         }
     }
 
