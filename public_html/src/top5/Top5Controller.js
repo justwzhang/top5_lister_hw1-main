@@ -29,6 +29,11 @@ export default class Top5Controller {
                 this.model.loadList(newList.id);
                 this.model.saveLists();
             }
+            let statusBar = document.getElementById("top5-statusbar");
+            let tempElemnt = document.createElement("h1");
+            tempElemnt.setAttribute("style", "text-align:center");
+            tempElemnt.innerHTML = "Top 5 Untitled";
+            statusBar.appendChild(tempElemnt);
         }
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
@@ -40,10 +45,11 @@ export default class Top5Controller {
         //close button
         document.getElementById("close-button").onmousedown = (event) => {
             this.model.unselectAll();
-            this.model.view.disableButton("close-button")
+            this.model.view.disableButton("close-button");
             this.model.view.updateToolbarButtons(this.model);
             let statusBar = document.getElementById("top5-statusbar");
-        
+            this.model.tps.clearAllTransactions();
+            this.model.view.updateToolbarButtons(this.model);
             statusBar.innerHTML = "";
             this.model.view.enableButton("add-list-button");
             for(let i = 1; i<=5; i++){
@@ -221,6 +227,8 @@ export default class Top5Controller {
                     let item = document.getElementById("item-" + i);
                     item.textContent = "";
                 }
+                let statusBar = document.getElementById("top5-statusbar");
+                statusBar.innerHTML = "";
                 this.model.view.enableButton("add-list-button");
             }
             //clicking cancel
