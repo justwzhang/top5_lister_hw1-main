@@ -136,6 +136,7 @@ export default class Top5Controller {
                 if (event.key === 'Enter') {
                     this.model.view.enableButton("add-list-button");
                     let name = event.target.value;
+                    this.model.view.disableButton("close-button");
                     if(name === ""){
                         name = "Untitled"
                     }
@@ -155,6 +156,7 @@ export default class Top5Controller {
             }
 
             textInput.onblur = (event) => {
+                this.model.view.disableButton("close-button");
                 this.model.view.enableButton("add-list-button");
                 let name = event.target.value;
                 if(name === ""){
